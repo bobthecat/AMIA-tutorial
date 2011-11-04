@@ -70,16 +70,159 @@ summary(x)
 
 
 ###################################################
-### code chunk number 9: FOR example
+### code chunk number 9: vector
 ###################################################
-for(i in 1:5){
-	# do something
-	print(i)
-}
+## Vector of strings
+x <- c("Lincoln", "Roosevelt", "Jackson")
+## Replace the second element of the vector
+x[2] <- NA
+x[!is.na(x)]
 
 
 ###################################################
-### code chunk number 10: IF example
+### code chunk number 10: matrix
+###################################################
+matrix(1:10, ncol=2)
+
+
+###################################################
+### code chunk number 11: matrix2
+###################################################
+matrix(1:10, nrow=2, byrow=TRUE)
+
+
+###################################################
+### code chunk number 12: list
+###################################################
+my.list <- list(
+  fruits = c("oranges", "bananas", "apples"), 
+  mat = matrix(1:10, nrow=2)
+)
+my.list
+
+
+###################################################
+### code chunk number 13: data.frame
+###################################################
+df <- data.frame(
+  fruits = c("oranges", "bananas", "apples"), 
+  color = c("orange", "yellow", "red"),
+  quantity = c(2, 3, 1)
+)
+df
+
+
+###################################################
+### code chunk number 14: data.frame2
+###################################################
+attributes(df)
+names(df)
+## Accessing data
+df$fruits
+
+
+###################################################
+### code chunk number 15: data.frame2
+###################################################
+a <- array(1:3, c(2,3,2)) # row, column, depth
+a
+
+
+###################################################
+### code chunk number 16: import1
+###################################################
+URL <- "http://www.stanford.edu/~druau/pivot_table.csv"
+pivot <- read.table(URL, sep=',', header=TRUE)
+pivot$value <- round(pivot$value, digits=3)
+head(pivot, 5)
+
+
+###################################################
+### code chunk number 17: format
+###################################################
+## Load the reshape library
+library(reshape)
+## reformatting the data with the cast function
+## Here we specify that we want the table organize 
+## with gene by condition
+head(cast(pivot, gene ~ condition), 5)
+
+
+###################################################
+### code chunk number 18: format2
+###################################################
+pivot <- cast(pivot, gene ~ condition)
+
+
+###################################################
+### code chunk number 19: format3
+###################################################
+head(subset(pivot, cheetos>=0.2), 2)
+
+
+###################################################
+### code chunk number 20: format4 (eval = FALSE)
+###################################################
+library(sqldf)
+head(sqldf('SELECT * FROM pivot WHERE cheetos >= 0.2'), 2)
+
+
+###################################################
+### code chunk number 21: database (eval = FALSE)
+###################################################
+require("RMySQL")
+con <- dbConnect(MySQL(), user="druau", pasword="will_not_tell_you", dbname="db", host="mysql_server")
+results <- dbGetQuery(con, "SELECT * from patients")
+
+
+###################################################
+### code chunk number 22: foreign (eval = FALSE)
+###################################################
+help(package="foreign")
+
+
+###################################################
+### code chunk number 23: microarray (eval = FALSE)
+###################################################
+library(affy)
+library(GEOquery)
+library(mouse4302cdf)
+getGEOSuppFiles("GSE12499")
+# Let's clean that up
+system('tar -xf GSE12499/GSE12499_RAW.tar -C GSE12499/')
+system('rm GSE12499/*.CHP*; rm GSE12499/*.tar')
+# and import the data
+da <- ReadAffy(celfile.path="./GSE12499/", compress=TRUE)
+
+
+###################################################
+### code chunk number 24: ArrayExpress (eval = FALSE)
+###################################################
+# Query ArrayExpress
+pneumoHS = queryAE(keywords = "pneumonia", species = "homo+sapiens")
+# download the data
+EGEOD1724 <- getAE("E-GEOD-1724", type='processed')
+cnames = getcolproc(EGEOD1724)
+# generate an expression set
+EGEOD1724.da <- procset(EGEOD1724, cnames[2])
+
+
+###################################################
+### code chunk number 25: export (eval = FALSE)
+###################################################
+save(list=c(pivot, mat), file="data_exoprt.Rda")
+# and then
+load("data_export.Rda")
+
+
+###################################################
+### code chunk number 26: export1 (eval = FALSE)
+###################################################
+## write.table(mat, file='matrix.csv', sep=',')
+
+
+###################################################
+### code chunk number 27: IF example
 ###################################################
 i <- 1
 if(i == 1){
@@ -90,13 +233,22 @@ if(i == 1){
 
 
 ###################################################
-### code chunk number 11: ifelse
+### code chunk number 28: ifelse
 ###################################################
 ifelse(i == 1, "i is equal 1", "i is NOT equal to 1")
 
 
 ###################################################
-### code chunk number 12: foreach example
+### code chunk number 29: FOR example
+###################################################
+for(i in 1:5){
+	# do something
+	print(i)
+}
+
+
+###################################################
+### code chunk number 30: foreach example
 ###################################################
 library(foreach)
 library(doMC)
@@ -111,7 +263,7 @@ results
 
 
 ###################################################
-### code chunk number 13: apply
+### code chunk number 31: apply
 ###################################################
 mat <- matrix(1:10, nrow=2, byrow=T)
 mat
@@ -122,14 +274,14 @@ apply(mat, 1, sum)
 
 
 ###################################################
-### code chunk number 14: apply2 (eval = FALSE)
+### code chunk number 32: apply2 (eval = FALSE)
 ###################################################
 ## ?lapply
 ## ?tapply
 
 
 ###################################################
-### code chunk number 15: simple function
+### code chunk number 33: simple function
 ###################################################
 Mr.euclide <- function(x, y){
 	dist <- sqrt(sum((x - y)^2))
@@ -138,13 +290,13 @@ Mr.euclide <- function(x, y){
 
 
 ###################################################
-### code chunk number 16: sourcing (eval = FALSE)
+### code chunk number 34: sourcing (eval = FALSE)
 ###################################################
-## source('myscript.r')
+source('myscript.r')
 
 
 ###################################################
-### code chunk number 17: Euclide distance
+### code chunk number 35: Euclide distance
 ###################################################
 x <- c(1, 1)
 y <- c(2, 2)
@@ -153,7 +305,7 @@ Mr.euclide(x, y)
 
 
 ###################################################
-### code chunk number 18: OOeuclide
+### code chunk number 36: OOeuclide
 ###################################################
 setClass("david", representation(x = "numeric"),	prototype = prototype(x = 0))
 myA <- new("david", x=c(1, 1))
@@ -161,165 +313,13 @@ myA
 
 
 ###################################################
-### code chunk number 19: OOeuclide (eval = FALSE)
+### code chunk number 37: OOeuclide (eval = FALSE)
 ###################################################
 Mr.euclide <- function(x, y){
-	if(class(x)!="david" & class(y)!="david") stop("error") 
-	dist <- sqrt(sum((x - y)^2))
-	return(dist)
+  if(class(x)!="david" & class(y)!="david") stop("error") 
+  dist <- sqrt(sum((x@x - y@x)^2))
+  return(dist)
 }
-
-
-###################################################
-### code chunk number 20: vector
-###################################################
-## Vector of strings
-x <- c("Lincoln", "Roosevelt", "Jackson")
-## Replace the second element of the vector
-x[2] <- NA
-x[!is.na(x)]
-
-
-###################################################
-### code chunk number 21: matrix
-###################################################
-matrix(1:10, ncol=2)
-
-
-###################################################
-### code chunk number 22: matrix2
-###################################################
-matrix(1:10, nrow=2, byrow=TRUE)
-
-
-###################################################
-### code chunk number 23: list
-###################################################
-my.list <- list(
-  fruits = c("oranges", "bananas", "apples"), 
-  mat = matrix(1:10, nrow=2)
-)
-my.list
-
-
-###################################################
-### code chunk number 24: data.frame
-###################################################
-df <- data.frame(
-  fruits = c("oranges", "bananas", "apples"), 
-  color = c("orange", "yellow", "red"),
-  quantity = c(2, 3, 1)
-)
-df
-
-
-###################################################
-### code chunk number 25: data.frame2
-###################################################
-attributes(df)
-names(df)
-## Accessing data
-df$fruits
-
-
-###################################################
-### code chunk number 26: data.frame2
-###################################################
-a <- array(1:3, c(2,3,2)) # row, column, depth
-a
-
-
-###################################################
-### code chunk number 27: import1
-###################################################
-URL <- "http://www.stanford.edu/~druau/pivot_table.csv"
-pivot <- read.table(URL, sep=',', header=TRUE)
-pivot$value <- round(pivot$value, digits=3)
-head(pivot, 5)
-
-
-###################################################
-### code chunk number 28: format
-###################################################
-## Load the reshape library
-library(reshape)
-## reformatting the data with the cast function
-## Here we specify that we want the table organize 
-## with gene by condition
-head(cast(pivot, gene ~ condition), 5)
-
-
-###################################################
-### code chunk number 29: format2
-###################################################
-pivot <- cast(pivot, gene ~ condition)
-
-
-###################################################
-### code chunk number 30: format3
-###################################################
-head(subset(pivot, cheetos>=0.2), 2)
-
-
-###################################################
-### code chunk number 31: format4 (eval = FALSE)
-###################################################
-library(sqldf)
-head(sqldf('SELECT * FROM pivot WHERE cheetos >= 0.2'), 2)
-
-
-###################################################
-### code chunk number 32: database (eval = FALSE)
-###################################################
-require("RMySQL")
-con <- dbConnect(MySQL(), user="druau", pasword="will_not_tell_you", dbname="db", host="mysql_server")
-results <- dbGetQuery(con, "SELECT * from patients")
-
-
-###################################################
-### code chunk number 33: foreign (eval = FALSE)
-###################################################
-help(package="foreign")
-
-
-###################################################
-### code chunk number 34: microarray (eval = FALSE)
-###################################################
-library(affy)
-library(GEOquery)
-library(mouse4302cdf)
-getGEOSuppFiles("GSE12499")
-# Let's clean that up
-system('tar -xf GSE12499/GSE12499_RAW.tar -C GSE12499/')
-system('rm GSE12499/*.CHP*; rm GSE12499/*.tar')
-# and import the data
-da <- ReadAffy(celfile.path="./GSE12499/", compress=TRUE)
-
-
-###################################################
-### code chunk number 35: ArrayExpress (eval = FALSE)
-###################################################
-# Query ArrayExpress
-pneumoHS = queryAE(keywords = "pneumonia", species = "homo+sapiens")
-# download the data
-EGEOD1724 <- getAE("E-GEOD-1724", type='processed')
-cnames = getcolproc(EGEOD1724)
-# generate an expression set
-EGEOD1724.da <- procset(EGEOD1724, cnames[2])
-
-
-###################################################
-### code chunk number 36: export (eval = FALSE)
-###################################################
-save(list=c(pivot, mat), file="data_exoprt.Rda")
-# and then
-load("data_export.Rda")
-
-
-###################################################
-### code chunk number 37: export1 (eval = FALSE)
-###################################################
-write.table(mat, file='matrix.csv', sep=',')
 
 
 ###################################################
@@ -410,18 +410,18 @@ library(affyPLM) # if not already loaded
 pset <- fitPLM(da)
 # little function combining the 4 types fo image
 img.Test <- function(batch,pset,x) {
-	par(mfrow = c(2,2))
-	image(batch[,x])
-	image(pset, type = "weights", which = x)
-	image(pset, type = "resids", which = x)
-	image(pset, type = "sign.resids", which = x)
+  par(mfrow = c(2,2))
+  image(batch[,x])
+  image(pset, type = "weights", which = x)
+  image(pset, type = "resids", which = x)
+  image(pset, type = "sign.resids", which = x)
 }
 # execute the function for each microarray
 for(n in 1:length(da)) {
-		filename <- paste("QC",as.vector(sampleNames(da))[n],".png", sep="")
-		png(file=filename, height=900, width=800)
-		img.Test(da,pset,n)
-		dev.off()
+    filename <- paste("QC",as.vector(sampleNames(da))[n],".png", sep="")
+    png(file=filename, height=900, width=800)
+    img.Test(da,pset,n)
+    dev.off()
 }
 
 
@@ -703,9 +703,9 @@ length(kegg2eg)
 
 go2kegg <- matrix(nrow=length(go2eg), ncol=length(kegg2eg))
 for(i in 1:length(go2eg)) {
-	for(j in 1:length(kegg2eg)) {
-		go2kegg[i,j] <- length(intersect(go2eg[[i]], kegg2eg[[j]]))
-	}
+  for(j in 1:length(kegg2eg)) {
+    go2kegg[i,j] <- length(intersect(go2eg[[i]], kegg2eg[[j]]))
+  }
 }
 rownames(go2kegg) <- names(go2eg)
 colnames(go2kegg) <- names(kegg2eg)
@@ -763,7 +763,7 @@ eq <- eq[jp,]
 ## look at ?paste for the detail of this step
 eq$loc <- paste(eq$LAT, eq$LON, sep=":")
 ## Plot the googleVis graph
-M <- gvisGeoMap(eq, locationvar="loc", numvar="MAG", hovervar="DATE",  options=list(region="JP"))
+M <- gvisGeoMap(eq, locationvar="loc", numvar="MAG", hovervar="DATE",  options=list(region="JP", dataMode="markers"))
 plot(M)
 
 
